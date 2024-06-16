@@ -22,13 +22,30 @@ import {
 import { AvatarUI } from "./Avatar";
 
 import { useRouter } from "next/navigation";
+// import { signOut } from "next-auth/react";
+import { useDispatch } from "react-redux";
+import { useLogOutUserMutation } from "@/redux/auth/authApi";
+import { signOut } from "next-auth/react";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+// import { useRouter } from "next/router";
 
 type props = {
   profilePic: string;
 };
 
 const MyAccount: React.FC<props> = ({ profilePic }) => {
+  // const [logOut, setLogOut] = useState(false);
   const router = useRouter();
+  const [  logOutUser ] = useLogOutUserMutation();
+
+
+
+  const handleLogOut = async () => {
+    await signOut({ redirect: false });
+    await logOutUser(null);
+  
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -72,7 +89,7 @@ const MyAccount: React.FC<props> = ({ profilePic }) => {
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogOut}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

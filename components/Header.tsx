@@ -9,7 +9,7 @@ import MyAccount from "./My-account";
 import AuthDialog from "./AuthDialog";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useSocilaAuthMutation } from "@/redux/auth/authApi";
+import { useSocialAuthMutation } from "@/redux/auth/authApi";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 
@@ -32,13 +32,13 @@ const Header: FC<Props> = () => {
 
 
 
-  const [socialAuth, { data }] = useSocilaAuthMutation();
+  const [socialAuth, { data }] = useSocialAuthMutation();
 
   const authSession = useSession();
 
-  // console.log(user)
+  console.log(user)
  
-  let profilePic = user? user.user.avatar || "" : "";
+  let profilePic = user ? user?.avatar :"/";
 
 
   useEffect(() => {

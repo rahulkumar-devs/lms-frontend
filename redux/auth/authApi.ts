@@ -1,5 +1,5 @@
 import apiSlice from "../features/api/apiSlice";
-import { userLoggedIn, userRegistration } from "./authSlice";
+import { userLoggedIn, userLoggedOut, userRegistration } from "./authSlice";
 
 type RegistrationResponse = {
     message: string;
@@ -18,15 +18,14 @@ const registrationApi = apiSlice.injectEndpoints({
                 url: "/register",
                 method: "POST",
                 body: data,
-                credentials: "include" as const,
+                credentials: "include",
             }),
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
                 try {
-                    const result = await queryFulfilled;
-
-                    dispatch(userRegistration({ token: result.data.activationToken }));
-                } catch (error: any) {
-                    console.log(error);
+                    const { data } = await queryFulfilled;
+                    dispatch(userRegistration({ token: data.activationToken }));
+                } catch (error) {
+                    console.error("Registration error:", error);
                 }
             },
         }),
@@ -35,58 +34,81 @@ const registrationApi = apiSlice.injectEndpoints({
                 url: "/activate-account",
                 method: "POST",
                 body: { activationToken, activateCode },
-                // credentials: 'include' as const
             }),
         }),
         login: builder.mutation({
             query: ({ email, password }) => ({
                 url: "/login",
                 method: "POST",
-                body: {
-                    email,
-                    password,
-                },
-                credentials: "include" as const,
+                body: { email, password },
+                credentials: "include",
             }),
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
                 try {
-                    const user = await queryFulfilled;
-
-                    dispatch(
-                        userLoggedIn({ token: user.data.accessToken, user: user.data.user })
-                    );
-                } catch (error: any) {
-                    console.log(error);
+                    const { data } = await queryFulfilled;
+                    dispatch(userLoggedIn({ token: data.accessToken, user: data.user }));
+                } catch (error) {
+                    console.error("Login error:", error);
                 }
             },
         }),
-        // socialAuth
-        socilaAuth: builder.mutation({
+        socialAuth: builder.mutation({
             query: ({ name, email, avatar }) => ({
                 url: "/social-auth",
                 method: "POST",
-                body: {
-                    name,
-                    email,
-                    avatar,
-                },
-                credentials: "include" as const,
-
+                body: { name, email, avatar },
+                credentials: "include",
             }),
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
                 try {
-                    const user = await queryFulfilled;
-                    console.log(user)
-                    dispatch(userLoggedIn({ user: user.data.user }));
-                } catch (error: any) {
-                    console.log(error);
+                    const { data } = await queryFulfilled;
+                    dispatch(userLoggedIn({ token: data.accessToken, user: data.user }));
+                } catch (error) {
+                    console.error("Social auth error:", error);
                 }
             },
         }),
+        logOutUser: builder.mutation({
+            query: () => ({
+                url: "/logout",
+                method: "POST",
+                credentials: "include",
+            }),
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(userLoggedOut());
+                } catch (error) {
+                    console.error("Logout error:", error);
+                }
+            },
+        }),
+
+        updateProfile: builder.mutation({
+            query: ({ name, avatar }) => {
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('avatar', avatar); // Assuming avatar is a File object
+             
+        
+                return {
+                  url: '/update-userinfo',
+                  method: 'PUT',
+                  body: formData,
+                  credentials: 'include' as const,
+                }
+            }
+        })
     }),
 });
 
-export const { useRegisterMutation, useActivationMutation, useLoginMutation, useSocilaAuthMutation  } =
-    registrationApi;
+export const {
+    useRegisterMutation,
+    useActivationMutation,
+    useLoginMutation,
+    useSocialAuthMutation,
+    useLogOutUserMutation,
+    useUpdateProfileMutation
+} = registrationApi;
 
 export default registrationApi;

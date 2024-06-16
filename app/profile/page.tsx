@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/Header";
+import Profile from "@/components/profile/Profile";
 import Protected from "@/hooks/useProtected";
 import { RootState } from "@/redux/store";
 import Heading from "@/utils/Heading";
@@ -11,12 +12,14 @@ type ProfileProps = {};
 
 const ProfilePage: FC<ProfileProps> = ({}) => {
   const { user } = useSelector((state: RootState) => state.auth);
+  const userName = user?.user?.name || "Guest";
 
   // console.log(user.user.name)
   return (
     <Protected>
-      <Heading title={`${user.user.name}- profile`} description="" keywords="" />
+           <Heading title={`${userName} - Profile`} description="" keywords="" />
       <Header />
+      <Profile/>
     </Protected>
   );
 };
