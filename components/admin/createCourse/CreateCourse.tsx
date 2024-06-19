@@ -1,15 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Benefits,
-  CourseContent,
-  CourseData,
-  CourseInfoData,
-  Prerequisites,
-  courseDataSchema,
-
-} from "./courseDataSchema";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -17,17 +8,16 @@ import { z } from "zod";
 
 import CourseInfo from "./CourseInfo";
 import CourseOptions from "./CourseOptions";
+import CourseData from "./CourseData";
 
 type Props = {};
 
 const CreateCourse = (props: Props) => {
   const [active, setActive] = useState<number>(0);
-  const [benefits, setBenefits] = useState<Benefits>([{ title: "" }]);
-  const [prerequisites, setPrerequisites] = useState<Prerequisites>([
-    { title: "" },
-  ]);
+  const [benefits, setBenefits] = useState([{ title: "" }]);
+  const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
 
-  const [courseInfo, setCourseInfo] = useState<CourseInfoData>({
+  const [courseInfo, setCourseInfo] = useState({
     name: "",
     description: "",
     price: "",
@@ -38,7 +28,7 @@ const CreateCourse = (props: Props) => {
     thumbnail: "",
   });
 
-  const [courseContentData, setCourseContentData] = useState<CourseContent[]>([
+  const [courseContentData, setCourseContentData] = useState([
     {
       videoUrl: "",
       title: "",
@@ -52,19 +42,7 @@ const CreateCourse = (props: Props) => {
       suggestion: "",
     },
   ]);
-  const [courseData, setCourseData] = useState<Partial<CourseData>>({});
-
-  const form = useForm<z.infer<typeof courseDataSchema>>({
-    resolver: zodResolver(courseDataSchema),
-    defaultValues: {},
-  });
-
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof courseDataSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+  const [courseData, setCourseData] = useState({});
 
   return (
     <div className=" w-full min-h-screen flex">
@@ -73,6 +51,16 @@ const CreateCourse = (props: Props) => {
           <CourseInfo
             courseInfo={courseInfo}
             setCourseInfo={setCourseInfo}
+            active={active}
+            setActive={setActive}
+          />
+        )}
+        {active === 1 && (
+          <CourseData
+            benefits={benefits}
+            setBenefits={setBenefits}
+            prerequisites={prerequisites}
+            setPrerequisits={setPrerequisites}
             active={active}
             setActive={setActive}
           />

@@ -51,7 +51,7 @@ export type CourseContent = z.infer<typeof courseContentSchema>;
 export type CourseInfoData = z.infer<typeof courseInfoSchema>;
 export type Benefits = z.infer<typeof benefitsSchema>;
 export type Prerequisites = z.infer<typeof prerequisitesSchema>;
-export type CourseData = z.infer<typeof courseDataSchema>;
+export type ZodCourseData = z.infer<typeof courseDataSchema>;
 
 
 

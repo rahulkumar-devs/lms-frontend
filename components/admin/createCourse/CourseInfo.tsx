@@ -51,6 +51,8 @@ const CourseInfo: FC<Props> = ({
 
   function onSubmit(values: z.infer<typeof courseInfoSchema>) {
     console.log(values);
+    setCourseInfo(values);
+    setActive(active + 1);
   }
 
   const handleFileChange = (
@@ -221,10 +223,12 @@ const CourseInfo: FC<Props> = ({
                       alt="Thumbnail"
                       className="max-h-full max-w-full"
                       objectFit="cover"
-                      fill={true}
+               
                       sizes="(max-width: 100%) 100vw, (max-width: 100%) "
                       priority
-                      placeholder="blur"
+                  
+                      width={100}
+                      height={100}
                     />
                   ) : (
                     <span>
@@ -244,7 +248,7 @@ const CourseInfo: FC<Props> = ({
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Next</Button>
         </form>
       </Form>
     </div>
