@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import UserDetails from "./UserDetails";
 import { useSearchParams } from "next/navigation";
-import useRoleProtected from "@/hooks/useRoleProtected";
+
 
 const Profile = () => {
 

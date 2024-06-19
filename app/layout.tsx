@@ -4,8 +4,7 @@ import { Inter, Josefin_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Providers } from "./Provider";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import  { Toaster } from 'react-hot-toast';
 import { SessionProvider } from "next-auth/react";
 import React from "react";
 import { useLogedUserQuery } from "@/redux/features/api/apiSlice";
@@ -39,7 +38,7 @@ export default function RootLayout({
               <Custom>
               {children}
               </Custom>
-              <ToastContainer draggable position="top-center" />
+              <Toaster  position="top-center" />
             </ThemeProvider>
           </SessionProvider>
         </Providers>

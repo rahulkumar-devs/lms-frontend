@@ -10,7 +10,7 @@ import AuthDialog from "./AuthDialog";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useSocialAuthMutation } from "@/redux/auth/authApi";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
 export const navItemsData = [

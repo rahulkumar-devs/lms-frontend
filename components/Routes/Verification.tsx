@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import {  useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useActivationMutation } from "@/redux/auth/authApi";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const verificationSchema = z.object({
   code: z.string().min(6, "Code must be at least 6 characters"),

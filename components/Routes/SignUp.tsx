@@ -19,7 +19,7 @@ import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoGithub } from "react-icons/io5";
 import { useRegisterMutation } from "@/redux/auth/authApi";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import Spinner from "@/utils/Spinner";
 
 const signupSchema = z.object({
