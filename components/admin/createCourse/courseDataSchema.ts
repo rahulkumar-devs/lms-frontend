@@ -1,4 +1,3 @@
-import { IconType } from "react-icons/lib";
 import { z } from "zod";
 
 // Define the Zod schemas
@@ -15,26 +14,27 @@ export const courseInfoSchema = z.object({
   tags: z.string(),
   level: z.string(),
   demoUrl: z.string(),
-  thumbnail:z.any(),
+  thumbnail: z.any(),
 });
 
-const courseContentSchema = z.object({
+export const courseContentSchema = z.object({
   videoUrl: z.string().url("Invalid video URL"),
-  title: z.string().nonempty("Title is required"),
-  description: z.string().nonempty("Description is required"),
+  title: z.string().min(3, "Title is required"),
+  description: z.string().min(5, "Description is required"),
   links: z.array(linkSchema),
+  videoSection:z.string(),
   suggestion: z.string().optional(),
 });
 
 const benefitsSchema = z.array(
   z.object({
-    title: z.string().nonempty("Benefit title is required"),
+    title: z.string().min(2, "Benefit title is required"),
   })
 );
 
 const prerequisitesSchema = z.array(
   z.object({
-    title: z.string().nonempty("Prerequisite title is required"),
+    title: z.string().min(2, "Prerequisite title is required"),
   })
 );
 
