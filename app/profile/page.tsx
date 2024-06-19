@@ -12,9 +12,9 @@ type ProfileProps = {};
 
 const ProfilePage: FC<ProfileProps> = ({}) => {
   const { user } = useSelector((state: RootState) => state.auth);
-  const userName = user?.user?.name || "Guest";
+  const userName = user?.name || "Guest";
 
-  // console.log(user.user.name)
+  // console.log(user.name)
   return (
     <Protected>
            <Heading title={`${userName} - Profile`} description="" keywords="" />

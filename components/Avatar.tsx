@@ -7,7 +7,8 @@ import {
   } from "@/components/ui/avatar"
 
   type props ={
-    profilePic:string
+    profilePic:string,
+    
   }
   
   export const AvatarUI:React.FC<props> = ({profilePic}) =>{

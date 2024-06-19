@@ -18,11 +18,19 @@ export const store = configureStore({
 
 
 const initializeApp = async () => {
-    await store.dispatch(apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true }));
-    await store.dispatch(apiSlice.endpoints.logedUser.initiate({}, { forceRefetch: true }));
-}
+  try {
+    // Force refetch to ensure it always runs
+    const refreshResult = await store.dispatch(apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true }));
+    
+    if (refreshResult.data) {
+      await store.dispatch(apiSlice.endpoints.logedUser.initiate({}, { forceRefetch: true }));
+    }
+  } catch (error) {
+    console.error("Error initializing app:", error);
+  }
+};
 
-initializeApp()
+initializeApp();
 
 
 

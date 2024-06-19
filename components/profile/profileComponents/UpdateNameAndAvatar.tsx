@@ -32,7 +32,9 @@ const UpdateNameAndAvatar: FC<UpdateNameAndAvatarProps> = ({
 }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<any>(avatar || "/");
   const [myAvatar, setMyAvatar] = useState<any>(null);
-  const [changeName, setChangeName] = useState<string>(name);
+  const [changeName, setChangeName] = useState<string>(name || "");
+
+// console.log(name,avatar)
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -75,7 +77,7 @@ const UpdateNameAndAvatar: FC<UpdateNameAndAvatarProps> = ({
           <Button
             variant="outline"
             aria-label="Edit Profile"
-            className="absolute top-o right-0"
+            className=""
           >
             <MdModeEdit />
           </Button>

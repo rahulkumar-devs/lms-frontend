@@ -28,6 +28,7 @@ const registrationApi = apiSlice.injectEndpoints({
                     console.error("Registration error:", error);
                 }
             },
+            invalidatesTags:["User"],
         }),
         activation: builder.mutation({
             query: ({ activationToken, activateCode }) => ({
@@ -35,6 +36,7 @@ const registrationApi = apiSlice.injectEndpoints({
                 method: "POST",
                 body: { activationToken, activateCode },
             }),
+            invalidatesTags:["User"],
         }),
         login: builder.mutation({
             query: ({ email, password }) => ({
@@ -51,6 +53,8 @@ const registrationApi = apiSlice.injectEndpoints({
                     console.error("Login error:", error);
                 }
             },
+            invalidatesTags:["User"],
+
         }),
         socialAuth: builder.mutation({
             query: ({ name, email, avatar }) => ({
@@ -67,6 +71,8 @@ const registrationApi = apiSlice.injectEndpoints({
                     console.error("Social auth error:", error);
                 }
             },
+            invalidatesTags:["User"],
+
         }),
         logOutUser: builder.mutation({
             query: () => ({
@@ -82,6 +88,8 @@ const registrationApi = apiSlice.injectEndpoints({
                     console.error("Logout error:", error);
                 }
             },
+            invalidatesTags:["User"],
+
         }),
 
         updateProfile: builder.mutation({
@@ -97,7 +105,9 @@ const registrationApi = apiSlice.injectEndpoints({
                   body: formData,
                   credentials: 'include' as const,
                 }
-            }
+            },
+            invalidatesTags:["User"],
+            
         })
     }),
 });

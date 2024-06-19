@@ -15,22 +15,22 @@ type SidebarType = {
   const sidebarData: SidebarType[] = [
     {
       name: "Profile",
-      path: "/",
+      path: "",
       icon: FiUser,
     },
     {
-      name: "Dashboard",
-      path: "/dashboard",
+      name: "Admin Dashboard",
+      path: "dashboard",
       icon: FiPieChart,
     },
     {
       name: "Settings",
-      path: "/settings",
+      path: "settings",
       icon: FiSettings,
     },
     {
-      name: "Conact me",
-      path: "/contact-me",
+      name: "Contact_me",
+      path: "contact-me",
       icon: FiMail,
     },
   ];
