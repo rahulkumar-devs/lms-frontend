@@ -119,43 +119,40 @@ const CourseContent = ({
   };
 
   const newContentHandler = (item: ICourseContentSchema) => {
-    if (
-      item.title === "" ||
-      item.description === "" ||
-      item.contentVideo === "" ||
-      item.links[0].title === "" ||
-      item.links[0].url === ""
-    ) {
+    const isItemValid = item.title && item.description && item.contentVideo && item.links[0].title && item.links[0].url;
+  
+    if (!isItemValid) {
       toast.error("Please fill all the fields first");
-    } else {
-      let newVideoSection = `Untitled Section ${active}`;
-  
-      if (courseContentData.length > 0) {
-        const lastVideoSection =
-          courseContentData[courseContentData.length - 1].videoSection;
-        if (lastVideoSection) {
-          newVideoSection = lastVideoSection + 1; // Increment the section name or ID
-        }
-      }
-  
-      const newContent: ICourseContentSchema = {
-        contentVideo: null,
-        videoSection: newVideoSection, // Assigning a unique section
-        title: "",
-        description: "",
-        links: [
-          {
-            title: "",
-            url: "",
-          },
-        ],
-        suggestion: "",
-      };
-  
-      setCourseContentData([...courseContentData, newContent]);
-      setDisplayVideos([...displayVideos, ""]); 
+      return;
     }
+  
+    let newVideoSection = "";
+  
+    if (courseContentData.length > 0) {
+      const lastVideoSection = courseContentData[courseContentData.length - 1].videoSection;
+      if (lastVideoSection) {
+        newVideoSection = lastVideoSection;
+      }
+    }
+  
+    const newContent: ICourseContentSchema = {
+      contentVideo: null,
+      videoSection: newVideoSection, // Assigning the section of the last content item
+      title: "",
+      description: "",
+      links: [
+        {
+          title: "",
+          url: "",
+        },
+      ],
+      suggestion: "",
+    };
+  
+    setCourseContentData([...courseContentData, newContent]);
+    setDisplayVideos([...displayVideos, ""]);
   };
+  
   
 
 
@@ -170,7 +167,7 @@ const CourseContent = ({
       return toast.error("Please fill all the field first");
     } else {
       const newSection: ICourseContentSchema = {
-        contentVideo: "",
+        contentVideo: null,
         videoSection: ` Untitled Section ${active}`,
         title: "",
         description: "",
