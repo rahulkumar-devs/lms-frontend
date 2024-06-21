@@ -4,12 +4,13 @@ import { Input } from "@/components/ui/input";
 import { IoIosAddCircle, IoIosRemoveCircle } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { IPrerequisites,IBenefit } from "./courseTypes";
 
 type Props = {
-  benefits: { title: string }[];
-  setBenefits: (benefits: { title: string }[]) => void;
-  prerequisites: { title: string }[];
-  setPrerequisits: (prerequisites: { title: string }[]) => void;
+  benefits: IBenefit[];
+  setBenefits: (benefits: IBenefit[]) => void;
+  prerequisites: IPrerequisites[];
+  setPrerequisites: (prerequisites: IPrerequisites[]) => void;
   active: number;
   setActive: (active: number) => void;
 };
@@ -18,7 +19,7 @@ const CourseData = ({
   benefits,
   setBenefits,
   prerequisites,
-  setPrerequisits,
+  setPrerequisites,
   active,
   setActive,
 }: Props) => {
@@ -40,16 +41,16 @@ const CourseData = ({
   const handlePrerequisitesChange = (index: number, value: string) => {
     const updatedPrerequisites = [...prerequisites];
     updatedPrerequisites[index].title = value;
-    setPrerequisits(updatedPrerequisites);
+    setPrerequisites(updatedPrerequisites);
   };
 
   const handleAddPrerequisite = () => {
-    setPrerequisits([...prerequisites, { title: "" }]);
+    setPrerequisites([...prerequisites, { title: "" }]);
   };
 
   const handleRemovePrerequisite = (index: number) => {
     const updatedPrerequisites = prerequisites.filter((_, i) => i !== index);
-    setPrerequisits(updatedPrerequisites);
+    setPrerequisites(updatedPrerequisites);
   };
 
   const prevButton = () => {
