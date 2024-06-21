@@ -1,10 +1,5 @@
 import { z } from "zod";
 
-// Define the Zod schemas
-const linkSchema = z.object({
-  title: z.string().nonempty("Link title is required"),
-  url: z.string().url("Invalid URL"),
-});
 
 export const courseInfoSchema = z.object({
   name: z.string(),
@@ -13,45 +8,28 @@ export const courseInfoSchema = z.object({
   estimatedPrice: z.string(),
   tags: z.string(),
   level: z.string(),
-  demoUrl: z.string(),
+  demoVideo: z.any(),
   thumbnail: z.any(),
 });
 
-export const courseContentSchema = z.object({
-  videoUrl: z.string().url("Invalid video URL"),
-  title: z.string().min(3, "Title is required"),
-  description: z.string().min(5, "Description is required"),
-  links: z.array(linkSchema),
-  videoSection:z.string(),
-  suggestion: z.string().optional(),
-});
 
-const benefitsSchema = z.array(
-  z.object({
-    title: z.string().min(2, "Benefit title is required"),
-  })
-);
 
-const prerequisitesSchema = z.array(
-  z.object({
-    title: z.string().min(2, "Prerequisite title is required"),
-  })
-);
 
-export const courseDataSchema = z.object({
-  active: z.number(),
-  benefits: benefitsSchema,
-  prerequisites: prerequisitesSchema,
-  courseContentData: z.array(courseContentSchema),
-});
 
-// Define TypeScript types based on Zod schemas
-export type Link = z.infer<typeof linkSchema>;
-export type CourseContent = z.infer<typeof courseContentSchema>;
 export type CourseInfoData = z.infer<typeof courseInfoSchema>;
-export type Benefits = z.infer<typeof benefitsSchema>;
-export type Prerequisites = z.infer<typeof prerequisitesSchema>;
-export type ZodCourseData = z.infer<typeof courseDataSchema>;
+
+
+
+
+export interface courseContentSchema {
+  videoUrl: string,
+  title: string;
+  description: string;
+  links: { title: string, url: string }[];
+  videoSection: string;
+  suggestion?: string;
+
+}
 
 
 
