@@ -4,10 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import React, { useState, useEffect } from "react";
-import {
-  courseContentSchema,
-  CourseContent as courseContent,
-} from "./courseDataSchema";
 
 import { Button } from "@/components/ui/button";
 
@@ -22,10 +18,11 @@ import { BsLink45Deg, BsPencil } from "react-icons/bs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
+import { ICourseContentSchema } from "./courseTypes";
 
 type Props = {
-  courseContentData: courseContent[];
-  setCourseContentData: (courseContentData: any) => void;
+  courseContentData: ICourseContentSchema[];
+  setCourseContentData: (ICourseContentSchema: any) => void;
   active: number;
   setActive: (active: number) => void;
   handleSubmit: any;
@@ -41,6 +38,67 @@ const CourseContent = ({
   const [isCollapsed, setIsCollapsed] = useState(
     Array(courseContentData.length).fill(false)
   );
+
+  const [activeSection, setActiveSection] = useState(1);
+  const [unableVideoSec, setUnableVideoSec] = useState(false);
+  const [dragVideo, setDragVideo] = useState<boolean>(false);
+  // Separate state for displayVideo
+  const [displayVideos, setDisplayVideos] = useState<string[]>(Array(courseContentData.length).fill(""));
+
+  const handleFileChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (reader.readyState === 2) {
+          const updateData = [...courseContentData];
+          updateData[index].contentVideo = file;
+          setCourseContentData(updateData);
+
+          const updatedDisplayVideos = [...displayVideos];
+          updatedDisplayVideos[index] = reader.result as string;
+          setDisplayVideos(updatedDisplayVideos);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setDragVideo(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setDragVideo(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>, index: number) => {
+    e.preventDefault();
+    setDragVideo(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (reader.readyState === 2) {
+          const updateData = [...courseContentData];
+          updateData[index].contentVideo = file;
+          setCourseContentData(updateData);
+
+          const updatedDisplayVideos = [...displayVideos];
+          updatedDisplayVideos[index] = reader.result as string;
+          setDisplayVideos(updatedDisplayVideos);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleCollapseToggle = (index: number) => {
     const updatedCollapsed = [...isCollapsed];
@@ -60,30 +118,29 @@ const CourseContent = ({
     setCourseContentData(updateData);
   };
 
-  const newContentHandler = (item: courseContent) => {
+  const newContentHandler = (item: ICourseContentSchema) => {
     if (
       item.title === "" ||
       item.description === "" ||
-      item.videoUrl === "" ||
+      item.contentVideo === "" ||
       item.links[0].title === "" ||
       item.links[0].url === ""
     ) {
-      toast.error("Please fill all the field first");
+      toast.error("Please fill all the fields first");
     } else {
-      let newVideoSection = "";
-
+      let newVideoSection = `Untitled Section ${active}`;
+  
       if (courseContentData.length > 0) {
         const lastVideoSection =
           courseContentData[courseContentData.length - 1].videoSection;
-        // use the last videoSection if available, else use user input
         if (lastVideoSection) {
-          newVideoSection = lastVideoSection;
+          newVideoSection = lastVideoSection + 1; // Increment the section name or ID
         }
       }
-
-      const newContent: courseContent = {
-        videoUrl: "",
-        videoSection: newVideoSection,
+  
+      const newContent: ICourseContentSchema = {
+        contentVideo: null,
+        videoSection: newVideoSection, // Assigning a unique section
         title: "",
         description: "",
         links: [
@@ -94,22 +151,26 @@ const CourseContent = ({
         ],
         suggestion: "",
       };
-
+  
       setCourseContentData([...courseContentData, newContent]);
+      setDisplayVideos([...displayVideos, ""]); 
     }
   };
+  
+
+
   const handleNewSection = () => {
     if (
       courseContentData[courseContentData.length - 1].title === "" ||
       courseContentData[courseContentData.length - 1].description === "" ||
-      courseContentData[courseContentData.length - 1].videoUrl === "" ||
+      courseContentData[courseContentData.length - 1].contentVideo === null ||
       courseContentData[courseContentData.length - 1].links[0].title === "" ||
       courseContentData[courseContentData.length - 1].links[0].url === ""
     ) {
       return toast.error("Please fill all the field first");
     } else {
-      const newSection: courseContent = {
-        videoUrl: "",
+      const newSection: ICourseContentSchema = {
+        contentVideo: "",
         videoSection: ` Untitled Section ${active}`,
         title: "",
         description: "",
@@ -123,6 +184,7 @@ const CourseContent = ({
       };
 
       setCourseContentData([...courseContentData, newSection]);
+      setDisplayVideos([...displayVideos, ""]); 
     }
   };
 
@@ -134,18 +196,20 @@ const CourseContent = ({
     if (
       courseContentData[courseContentData.length - 1].title === "" ||
       courseContentData[courseContentData.length - 1].description === "" ||
-      courseContentData[courseContentData.length - 1].videoUrl === "" ||
+      courseContentData[courseContentData.length - 1].contentVideo === "" ||
       courseContentData[courseContentData.length - 1].links[0].title === "" ||
       courseContentData[courseContentData.length - 1].links[0].url === ""
     ) {
       toast.error("Please fill the field before going to next step");
     } else {
-     
       setActive(active + 1);
+      handleCourseSubmit();
     }
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+  };
 
   return (
     <div className="w-[80%] m-auto mt-24 p-3">
@@ -178,8 +242,12 @@ const CourseContent = ({
                         updateData[index].videoSection = e.target.value;
                         setCourseContentData(updateData);
                       }}
+                      disabled={unableVideoSec}
                     />
-                    <BsPencil className="cursor-pointer dark:text-white text-black" />
+                    <BsPencil
+                      className="cursor-pointer dark:text-white text-black"
+                      onClick={() => setUnableVideoSec(!unableVideoSec)}
+                    />
                   </div>
                   <br />
                 </>
@@ -237,20 +305,38 @@ const CourseContent = ({
                     />
                   </div>
                   <div className="my-3 ">
-                    <Label id="title" className=" my-1.5">
-                      Video Url
+                    <Label
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, index)}
+                      id="contentVideoLabel"
+                      htmlFor={`contentVideo-${index}`}
+                      className={`w-full min-h-[10vh] cursor-pointer dark:border-white border-[#00000026] p-3 mt-3 border flex items-center justify-center ${
+                        dragVideo ? "bg-blue-500" : "bg-transparent"
+                      }`}
+                    >
+                      {displayVideos[index] ? (
+                        <video controls className="w-full">
+                          <source  src={displayVideos[index]} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <span>
+                          Drag and drop your{" "}
+                          <span className="text-red-600 font-bold">
+                            Content video
+                          </span>{" "}
+                          here or click to browse
+                        </span>
+                      )}
                     </Label>
                     <Input
-                      placeholder="video url"
-                      type="text"
-                      name="description"
-                      className=" mt-2"
-                      value={item.videoUrl}
-                      onChange={(e) => {
-                        const updateData = [...courseContentData];
-                        updateData[index].videoUrl = e.target.value;
-                        setCourseContentData(updateData);
-                      }}
+                      id={`contentVideo-${index}`}
+                      type="file"
+                      accept="video/*"
+                      name="contentVideo"
+                      className="mt-2 hidden"
+                      onChange={(e) => handleFileChange(index, e)}
                     />
                   </div>
                   <div className="my-3 ">
@@ -260,7 +346,7 @@ const CourseContent = ({
                     <Textarea
                       rows={8}
                       cols={30}
-                      placeholder="Project plan"
+                      placeholder="Project plans"
                       name="description"
                       className=" mt-6"
                       value={item.description}
