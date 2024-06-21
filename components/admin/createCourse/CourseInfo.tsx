@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FC, useState } from "react";
-import { CourseInfoData, courseInfoSchema } from "./courseDataSchema";
+import { courseInfoSchema, CourseInfoData } from "./courseDataSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -21,7 +21,7 @@ import Image from "next/image";
 
 type Props = {
   courseInfo: CourseInfoData;
-  setCourseInfo: (courseInfo: any) => void;
+  setCourseInfo: (courseInfo: CourseInfoData) => void;
   active: number;
   setActive: (active: number) => void;
 };
@@ -32,8 +32,10 @@ const CourseInfo: FC<Props> = ({
   active,
   setActive,
 }) => {
-  const [dragging, setDragging] = useState<boolean>(false);
+  const [draggingThumbnail, setDraggingThumbnail] = useState<boolean>(false);
   const [displayThumbnail, setDisplayThumbnail] = useState<string | null>(null);
+  const [draggingDemoVideo, setDraggingDemoVideo] = useState<boolean>(false);
+  const [demoVideo, setDemoVideo] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof courseInfoSchema>>({
     resolver: zodResolver(courseInfoSchema),
@@ -44,7 +46,7 @@ const CourseInfo: FC<Props> = ({
       estimatedPrice: "",
       tags: "",
       level: "",
-      demoUrl: "",
+      demoVideo: null,
       thumbnail: null,
     },
   });
@@ -57,7 +59,8 @@ const CourseInfo: FC<Props> = ({
 
   const handleFileChange = (
     field: any,
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: "thumbnail" | "demoVideo"
   ) => {
     const file = event.target.files?.[0];
 
@@ -65,7 +68,11 @@ const CourseInfo: FC<Props> = ({
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (reader.readyState === 2) {
-          setDisplayThumbnail(reader.result as string);
+          if (type === "thumbnail") {
+            setDisplayThumbnail(reader.result as string);
+          } else {
+            setDemoVideo(reader.result as string);
+          }
         }
       };
       reader.readAsDataURL(file);
@@ -74,26 +81,55 @@ const CourseInfo: FC<Props> = ({
     field.onChange(file);
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+  const handleDragOver = (
+    e: React.DragEvent<HTMLLabelElement>,
+    type: "thumbnail" | "demoVideo"
+  ) => {
     e.preventDefault();
-    setDragging(true);
+    if (type === "thumbnail") {
+      setDraggingThumbnail(true);
+    } else {
+      setDraggingDemoVideo(true);
+    }
   };
 
-  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+  const handleDragLeave = (
+    e: React.DragEvent<HTMLLabelElement>,
+    type: "thumbnail" | "demoVideo"
+  ) => {
     e.preventDefault();
-    setDragging(false);
+    if (type === "thumbnail") {
+      setDraggingThumbnail(false);
+    } else {
+      setDraggingDemoVideo(false);
+    }
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLLabelElement>, field: any) => {
+  const handleDrop = (
+    e: React.DragEvent<HTMLLabelElement>,
+    field: any,
+    type: "thumbnail" | "demoVideo"
+  ) => {
     e.preventDefault();
-    setDragging(false);
+    if (type === "thumbnail") {
+      setDraggingThumbnail(false);
+    };
+     if(type === "demoVideo") {
+      setDraggingDemoVideo(false);
+    }
+
     const file = e.dataTransfer.files?.[0];
 
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (reader.readyState === 2) {
-          setDisplayThumbnail(reader.result as string);
+          if (type === "thumbnail") {
+            setDisplayThumbnail(reader.result as string);
+          }
+          if(type === "demoVideo"){
+            setDemoVideo(reader.result as string);
+          }
         }
       };
       reader.readAsDataURL(file);
@@ -101,7 +137,6 @@ const CourseInfo: FC<Props> = ({
 
     field.onChange(file);
   };
-
   return (
     <div className="w-[80%] m-auto mt-24">
       <Form {...form}>
@@ -176,7 +211,7 @@ const CourseInfo: FC<Props> = ({
               </FormItem>
             )}
           />
-          <div className="flex items-center justify-between">
+          <div className="flex  w-full  flex-col justify-between">
             <FormField
               control={form.control}
               name="level"
@@ -192,12 +227,36 @@ const CourseInfo: FC<Props> = ({
             />
             <FormField
               control={form.control}
-              name="demoUrl"
+              name="demoVideo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Demo URL</FormLabel>
+                  <FormLabel
+                    onDragOver={(e) => handleDragOver(e, "demoVideo")}
+                    onDragLeave={(e) => handleDragLeave(e, "demoVideo")}
+                    onDrop={(event) => handleDrop(event, field, "demoVideo")}
+                    className={`w-full min-h-[10vh] dark:border-white border-[#00000026] p-3 mt-3 border flex items-center justify-center ${
+                      draggingDemoVideo ? "bg-blue-500" : "bg-transparent"
+                    }`}
+                  >
+                    {demoVideo ? (
+                      <video controls className=" w-full">
+                        <source src={demoVideo} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <span>
+                        Drag and drop your thumbnail here or click to browse
+                      </span>
+                    )}
+                  </FormLabel>
+
                   <FormControl>
-                    <Input placeholder="Demo URL" {...field} />
+                    <Input
+                      type="file"
+                      accept="video/*"
+                      onChange={(event) => handleFileChange(field, event, "demoVideo")}
+                      className="hidden"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -210,11 +269,11 @@ const CourseInfo: FC<Props> = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={(event) => handleDrop(event, field)}
+                  onDragOver={(e) => handleDragOver(e, "thumbnail")}
+                  onDragLeave={(e) => handleDragLeave(e, "thumbnail")}
+                  onDrop={(event) => handleDrop(event, field, "thumbnail")}
                   className={`w-full min-h-[10vh] dark:border-white border-[#00000026] p-3 border flex items-center justify-center ${
-                    dragging ? "bg-blue-500" : "bg-transparent"
+                    draggingThumbnail ? "bg-blue-500" : "bg-transparent"
                   }`}
                 >
                   {displayThumbnail ? (
@@ -223,10 +282,8 @@ const CourseInfo: FC<Props> = ({
                       alt="Thumbnail"
                       className="max-h-full max-w-full"
                       objectFit="cover"
-               
                       sizes="(max-width: 100%) 100vw, (max-width: 100%) "
                       priority
-                  
                       width={100}
                       height={100}
                     />
@@ -240,7 +297,7 @@ const CourseInfo: FC<Props> = ({
                   <Input
                     type="file"
                     accept=".jpeg,.jpg,.png"
-                    onChange={(event) => handleFileChange(field, event)}
+                    onChange={(event) => handleFileChange(field, event,"thumbnail")}
                     className="hidden"
                   />
                 </FormControl>
