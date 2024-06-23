@@ -38,13 +38,12 @@ export interface ILink {
  export  interface ICourseData {
     name: string;
     description: string;
-    price: number;
-    estimatedPrice: number;
+    price: string;
+    estimatedPrice: string;
     tags: string;
     thumbnail: any;
     level: string;
     demoVideo: any;
-    totalVideos: number;
     prerequisites: IBenefit[];
     benefits: IBenefit[];
     courseContent: ICourseContentSchema[];

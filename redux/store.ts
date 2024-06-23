@@ -5,11 +5,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import apiSlice from "./features/api/apiSlice"
 import { setupListeners } from '@reduxjs/toolkit/query';
 import authSlice from './auth/authSlice';
+import courseApi from './course/courseApi';
 
 export const store = configureStore({
     reducer: {
         [apiSlice.reducerPath]: apiSlice.reducer,
-        auth: authSlice
+        auth: authSlice,
+        // courseApi:courseApi,
     },
     devTools: false,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware)

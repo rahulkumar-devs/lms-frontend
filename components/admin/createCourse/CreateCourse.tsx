@@ -1,36 +1,60 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
+import React, { useEffect, useState } from "react";
 import CourseInfo from "./CourseInfo";
 import CourseOptions from "./CourseOptions";
 import CourseData from "./CourseData";
 import CourseContent from "./CourseContent";
+import { CourseInfoData, courseContentSchema } from "./courseDataSchema";
+import CoursePreview from "./CoursePreview";
+import {
+  ICourseData,
+  ILink,
+  ICourseContentSchema,
+  ICourseInfo,
+  IBenefit,
+  IPrerequisites,
+} from "./courseTypes";
+import CourseSuccess from "./CourseSuccess";
+import { useUploadCourseMutation } from "@/redux/course/courseApi";
+import toast from "react-hot-toast";
 
 type Props = {};
 
 const CreateCourse = (props: Props) => {
-  const [active, setActive] = useState<number>(2);
-  const [benefits, setBenefits] = useState([{ title: "" }]);
-  const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
+  const [active, setActive] = useState<number>(0);
+  const [isReadyToUpload, setIsReadyToUpload] = useState(false);
+  const [benefits, setBenefits] = useState<IBenefit[]>([{ title: "" }]);
+  const [prerequisites, setPrerequisites] = useState<IPrerequisites[]>([
+    { title: "" },
+  ]);
 
-  const [courseInfo, setCourseInfo] = useState({
+  // RTK Query uplaod course
+  const [uploadCourse, { isLoading, isSuccess, error, data }] =
+    useUploadCourseMutation();
+
+  useEffect(() => {
+    if (active > 4) {
+      return;
+    }
+  }, [active]);
+
+  const [courseInfo, setCourseInfo] = useState<CourseInfoData>({
     name: "",
     description: "",
     price: "",
     estimatedPrice: "",
     tags: "",
     level: "",
-    demoUrl: "",
-    thumbnail: "",
+    demoVideo: null,
+    thumbnail: null,
   });
 
-  const [courseContentData, setCourseContentData] = useState([
+  const [courseContentData, setCourseContentData] = useState<
+    ICourseContentSchema[]
+  >([
     {
-      videoUrl: "",
+      contentVideo: "",
       videoSection: "Untitled Section",
       title: "",
       description: "",
@@ -44,9 +68,118 @@ const CreateCourse = (props: Props) => {
     },
   ]);
 
-  const [courseData, setCourseData] = useState({});
+  const [courseData, setCourseData] = useState<Partial<ICourseData>>({});
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async () => {
+    // Format benefits array
+    const formateBenefits = benefits.map((benefit) => ({
+      title: benefit.title,
+    }));
+    // Format prerequisite array
+    const formatePrerequisites = prerequisites.map((prerequisite) => ({
+      title: prerequisite.title,
+    }));
+
+    const formateCourseContentData = courseContentData.map(
+      (courseContent: ICourseContentSchema) => ({
+        contentVideo: courseContent.contentVideo,
+        videoSection: courseContent.videoSection,
+        title: courseContent.title,
+        description: courseContent.description,
+        links: courseContent.links.map(
+          (link: { title: string; url: string }) => ({
+            title: link.title,
+            url: link.url,
+          })
+        ),
+        suggestion: courseContent.suggestion || "", // Provide a default value if undefined
+      })
+    );
+
+    // Prepare data object
+    const data: ICourseData = {
+      name: courseInfo.name,
+      description: courseInfo.description,
+      price: courseInfo.price,
+      estimatedPrice: courseInfo.estimatedPrice,
+      tags: courseInfo.tags,
+      thumbnail: courseInfo.thumbnail,
+      level: courseInfo.level,
+      demoVideo: courseInfo.demoVideo,
+
+      prerequisites: formatePrerequisites,
+      benefits: formateBenefits,
+      courseContent: formateCourseContentData,
+    };
+
+    setCourseData(data);
+  };
+
+  // <============>
+  const handleCourseCreate = async (e: any) => {
+    
+    const formData = new FormData();
+
+    // Append text fields
+    formData.append("name", courseData.name || "");
+    formData.append("description", courseData.description || "");
+    formData.append("price", courseData.price || "");
+    formData.append("estimatedPrice", courseData.estimatedPrice || "");
+    formData.append("tags", courseData.tags || "");
+    formData.append("level", courseData.level || "");
+    // Append files
+    if (courseInfo.thumbnail) {
+      formData.append("thumbnail", courseInfo.thumbnail);
+    }
+    if (courseInfo.demoVideo) {
+      formData.append("demoVideo", courseInfo.demoVideo);
+    }
+
+    // 
+
+    if(courseData.prerequisites&& courseData.prerequisites?.length >0){
+      formData.append("prerequisites",JSON.stringify(courseData.prerequisites))
+    }
+
+    if(courseData.benefits&& courseData.benefits?.length >0){
+      formData.append("benefits",JSON.stringify(courseData.benefits))
+    }
+
+    if(courseData.courseContent && courseData.courseContent.length >0){
+      formData.append("courseContent",JSON.stringify(courseData.courseContent))
+    }
+
+    // send all videos 
+    if(courseData.courseContent && courseData.courseContent.length >0){
+      courseData.courseContent.forEach((item,index)=>{
+        formData.append("courseVideo",item.contentVideo)
+      })
+
+    }
+
+    await uploadCourse(formData);
+    
+  }
+  
+  
+
+  
+  
+
+  useEffect(() => {
+    if (isSuccess) {
+      const message = data?.message || "Registration successfully !";
+      toast.success(message);
+    }
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData?.data.message);
+      }
+    }
+  }, [isSuccess, data, error]);
+
+
 
   return (
     <div className="w-full min-h-screen flex">
@@ -64,7 +197,7 @@ const CreateCourse = (props: Props) => {
             benefits={benefits}
             setBenefits={setBenefits}
             prerequisites={prerequisites}
-            setPrerequisits={setPrerequisites}
+            setPrerequisites={setPrerequisites}
             active={active}
             setActive={setActive}
           />
@@ -77,6 +210,20 @@ const CreateCourse = (props: Props) => {
             setActive={setActive}
             handleSubmit={handleSubmit}
           />
+        )}
+        {active === 3 && (
+          <CoursePreview
+            courseData={courseData}
+            active={active}
+            setActive={setActive}
+            handleCourseCreate={handleCourseCreate}
+            isLoading={isLoading}
+            isSuccess={isSuccess}
+
+          />
+        )}
+        {active === 4 && (
+          <CourseSuccess active={active} setActive={setActive} />
         )}
       </div>
       <div className="w-[20%] mt-[100px] h-screen fixed z-[-1] top-10 right-0">

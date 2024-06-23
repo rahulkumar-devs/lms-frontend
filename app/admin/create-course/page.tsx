@@ -5,6 +5,7 @@ import CreateCourse from "@/components/admin/createCourse/CreateCourse";
 import AdminSidebar from "@/components/admin/sidebar/AdminSidebar";
 import Heading from "@/utils/Heading";
 import React, { useState } from "react";
+import RoleProtected from "@/components/ProtectedRoute";
 
 type Props = {};
 
@@ -12,7 +13,7 @@ const Page = (props: Props) => {
   return (
     <div className="relative">
       <Heading title="create-course " description="" keywords="" />
-      <div className="flex h-[200vh]">
+      <div className="flex min-h-[200vh]">
         <div className="md:lg:w-[16%] md:w-1/5 w-full  top-0 left-0 fixed justify-between md:static flex items-center dark:bg-black ">
           <AdminSidebar />
           <div className="absolute top-0 right-0 md:hidden block">

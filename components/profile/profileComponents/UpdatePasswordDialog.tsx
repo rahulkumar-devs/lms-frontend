@@ -15,7 +15,8 @@ import { Label } from "@/components/ui/label";
 import { MdModeEdit, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { cn } from "@/lib/utils";
 import { useUpdatePasswordMutation } from "@/redux/auth/userApi";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+
 import Spinner from "@/utils/Spinner";
 
 type Props = {};

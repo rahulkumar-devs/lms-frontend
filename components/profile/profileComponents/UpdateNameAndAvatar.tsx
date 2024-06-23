@@ -16,7 +16,7 @@ import { MdModeEdit } from "react-icons/md";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useUpdateProfileMutation } from "@/redux/auth/authApi";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import Spinner from "@/utils/Spinner";
 
 type UpdateNameAndAvatarProps = {

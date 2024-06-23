@@ -119,7 +119,7 @@ const CourseContent = ({
   };
 
   const newContentHandler = (item: ICourseContentSchema) => {
-    const isItemValid = item.title && item.description && item.contentVideo && item.links[0].title && item.links[0].url;
+    const isItemValid = item.title && item.description && item.contentVideo ;
   
     if (!isItemValid) {
       toast.error("Please fill all the fields first");
@@ -160,9 +160,7 @@ const CourseContent = ({
     if (
       courseContentData[courseContentData.length - 1].title === "" ||
       courseContentData[courseContentData.length - 1].description === "" ||
-      courseContentData[courseContentData.length - 1].contentVideo === null ||
-      courseContentData[courseContentData.length - 1].links[0].title === "" ||
-      courseContentData[courseContentData.length - 1].links[0].url === ""
+      courseContentData[courseContentData.length - 1].contentVideo === null 
     ) {
       return toast.error("Please fill all the field first");
     } else {
@@ -193,9 +191,7 @@ const CourseContent = ({
     if (
       courseContentData[courseContentData.length - 1].title === "" ||
       courseContentData[courseContentData.length - 1].description === "" ||
-      courseContentData[courseContentData.length - 1].contentVideo === "" ||
-      courseContentData[courseContentData.length - 1].links[0].title === "" ||
-      courseContentData[courseContentData.length - 1].links[0].url === ""
+      courseContentData[courseContentData.length - 1].contentVideo === "" 
     ) {
       toast.error("Please fill the field before going to next step");
     } else {
@@ -380,7 +376,7 @@ const CourseContent = ({
                             </div>
                             <Input
                               type="text"
-                              placeholder="Source code .. (link title)"
+                              placeholder="Source code .. (link title) Optional"
                               value={link.title}
                               className=" mt-4"
                               onChange={(e) => {
@@ -392,7 +388,7 @@ const CourseContent = ({
                             />
                             <Input
                               type="text"
-                              placeholder="Source code .. (link URL)"
+                              placeholder="Source code .. (link URL) Optional"
                               value={link.url}
                               className=" mt-4"
                               onChange={(e) => {

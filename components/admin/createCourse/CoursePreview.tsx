@@ -3,12 +3,15 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { ICourseData } from "./courseTypes";
 import { Button } from "@/components/ui/button";
+import { boolean } from "zod";
 
 type Props = {
   active: number;
   setActive: (active: number) => void;
   courseData: Partial<ICourseData>;
   handleCourseCreate: any;
+  isLoading: boolean;
+  isSuccess: boolean;
 };
 
 const CoursePreview = ({
@@ -16,15 +19,22 @@ const CoursePreview = ({
   setActive,
   courseData,
   handleCourseCreate,
+  isLoading,
+  isSuccess,
 }: Props) => {
-
   const prevButton = () => {
     setActive(active - 1);
   };
 
   const handleOptions = () => {
-    setActive(active + 1);
+    handleCourseCreate();
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setActive(active + 1);
+    }
+  }, [isSuccess, setActive, active]);
 
   const [videoUrls, setVideoUrls] = useState({
     videoThumbnail: "",
@@ -76,9 +86,10 @@ const CoursePreview = ({
   }, [courseData, getAllFilesData]);
 
   return (
-    <div className="w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] m-auto py-5 mb-5">
+    <div className="w-[90%] md:w-[80%]  m-auto py-5 mb-5">
       <div className="w-full relative">
         <p className="text-2xl font-bold">Course Preview</p>
+        <p className="text-2xl font-bold">Name</p>
         <p className="text-lg">{courseData.name}</p>
 
         <div className="w-full mt-10">
@@ -92,12 +103,23 @@ const CoursePreview = ({
               Your browser does not support the video tag.
             </video>
           )}
+          <div className="flex items-center justify-around mt-5">
+            <div>
+              <p className="font-semibold">Estimated Price</p>
+              <p>{courseData.estimatedPrice}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Price</p>
+              <p>{courseData.price}</p>
+            </div>
+          </div>
         </div>
-
+        <br />
         <section className="mt-5">
           <p className="text-xl font-bold">Description</p>
           <p>{courseData.description}</p>
         </section>
+        <br />
 
         <section className="mt-5">
           <p className="text-xl font-bold">Benefits</p>
@@ -107,6 +129,7 @@ const CoursePreview = ({
             ))}
           </ul>
         </section>
+        <br />
 
         <section className="mt-5">
           <p className="text-xl font-bold">Prerequisites</p>
@@ -116,17 +139,7 @@ const CoursePreview = ({
             ))}
           </ul>
         </section>
-
-        <div className="flex items-center justify-around mt-5">
-          <div>
-            <p className="font-semibold">Estimated Price</p>
-            <p>{courseData.estimatedPrice}</p>
-          </div>
-          <div>
-            <p className="font-semibold">Price</p>
-            <p>{courseData.price}</p>
-          </div>
-        </div>
+        <br />
 
         <section className="mt-5">
           <p className="text-xl font-bold">Course Content</p>
@@ -137,7 +150,9 @@ const CoursePreview = ({
                 onClick={() => toggleExpand(index)}
               >
                 <p className="font-semibold">{item.title}</p>
-                <p className="text-sm text-blue-500">{expandedIndex === index ? 'Collapse' : 'Expand'}</p>
+                <p className="text-sm text-blue-500">
+                  {expandedIndex === index ? "Collapse" : "Expand"}
+                </p>
               </div>
               {expandedIndex === index && (
                 <>
@@ -148,7 +163,12 @@ const CoursePreview = ({
                   <ul className="list-disc list-inside">
                     {item.links.map((link, linkIndex) => (
                       <li key={linkIndex}>
-                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 underline"
+                        >
                           {link.title}
                         </a>
                       </li>
@@ -157,7 +177,10 @@ const CoursePreview = ({
                   {videoUrls.contentVideoUrls[index] && (
                     <div className="mt-3">
                       <video controls className="w-full">
-                        <source src={videoUrls.contentVideoUrls[index]} type="video/mp4" />
+                        <source
+                          src={videoUrls.contentVideoUrls[index]}
+                          type="video/mp4"
+                        />
                         Your browser does not support the video tag.
                       </video>
                     </div>
@@ -167,10 +190,16 @@ const CoursePreview = ({
             </div>
           ))}
         </section>
+        <br />
+        <br />
 
         <div className="flex items-center justify-between w-full mt-5">
-          <Button onClick={prevButton}>Prev</Button>
-          <Button onClick={handleOptions}>Next</Button>
+          <Button onClick={prevButton} disabled={isLoading}>
+            Prev
+          </Button>
+          <Button onClick={handleOptions} disabled={isLoading}>
+            {isLoading ? "Course is uploading ..." : "Upload"}
+          </Button>
         </div>
       </div>
     </div>

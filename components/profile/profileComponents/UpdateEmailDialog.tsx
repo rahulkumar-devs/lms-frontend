@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import Spinner from "@/utils/Spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -81,7 +81,7 @@ const UpdateEmailDialog: FC = () => {
     <div>
       <Dialog>
         <DialogTrigger
-          variant="outline"
+         
           className="absolute right-0 top-0 p-1.5 "
           aria-label="Edit Email"
           
