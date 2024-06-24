@@ -1,11 +1,13 @@
-// components/RoleProtected.tsx
+
+"use client"
+
 import { FC, ReactNode, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
 type ProtectedProps = {
-  allowedRoles: string[];
+  allowedRoles: string;
   children: ReactNode;
   redirectPath?: string;
 };
@@ -13,7 +15,11 @@ type ProtectedProps = {
 const RoleProtected: FC<ProtectedProps> = ({ allowedRoles, children, redirectPath = "/" }) => {
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
-  const isAllowed = user?.roles?.some((role: string) => allowedRoles.includes(role));
+
+  console.log(user)
+  const isAllowed = user?.role.includes(allowedRoles);
+  console.log(isAllowed)
+
 
   useEffect(() => {
     if (!isAllowed) {
