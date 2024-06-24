@@ -3,6 +3,7 @@ import Heading from "@/utils/Heading";
 import React, { useState } from "react";
 import AdminSidebar from "@/components/admin/sidebar/AdminSidebar";
 import DashboardHeader from "@/components/admin/DashboardHeader"
+import RoleProtected from "@/components/ProtectedRoute";
 
 type Props = {};
 
@@ -13,6 +14,8 @@ const AdminDashboard = (props: Props) => {
 
   return (
     <>
+      <RoleProtected allowedRoles={"admin"}>
+
       <div className="relative">
         <Heading title="admin " description="" keywords="" />
         <div className="flex h-[200vh]">
@@ -26,6 +29,8 @@ const AdminDashboard = (props: Props) => {
           </div>
         </div>
       </div>
+      </RoleProtected>
+
     </>
   );
 };
