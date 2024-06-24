@@ -60,7 +60,7 @@ const AdminSidebar = () => {
       label: "Create Course",
       itemIcons: BsCameraVideoFill,
     },
-    { href: "/admin/live-course", label: "Live Course", itemIcons: CiStreamOn },
+    { href: "/admin/courses", label: "Live Course", itemIcons: CiStreamOn },
   ];
 
   const CustomizationDropdown = [
