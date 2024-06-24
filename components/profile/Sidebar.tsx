@@ -24,7 +24,7 @@ const Sidebar = ({ setActiveTab, activeTab }: SidebarProps) => {
           lg:w-[calc(100vw-85vw)] hide-scrollbar py-2 px-1.5 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex md:bg-transparent md:text-sm md:font-medium md:text-gray-500 md:dark:text-gray-400 overflow-x-auto`}
       >
         {sidebarData.map((item) => {
-          if (!user?.roles?.includes("admin") && item.path === "dashboard")
+          if (user?.role !== "admin" && item.path === "dashboard")
             return null;
 
           return (
