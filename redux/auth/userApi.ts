@@ -54,8 +54,21 @@ const userApi = apiSlice.injectEndpoints({
             }),
             invalidatesTags:["User"],
 
+        }),
+        getAllUsers: builder.query({
+            query: ({}) => ({
+                url: "/users",
+                method: "GET",
+              
+                credentials: "include" as const,
+
+            }),
+            providesTags:["User"],
+
         })
+
+
     })
 })
 
-export const { useChangeEmailMutation, useVerifyEmailMutation,useUpdatePasswordMutation } = userApi
+export const { useChangeEmailMutation, useVerifyEmailMutation,useUpdatePasswordMutation,useGetAllUsersQuery } = userApi

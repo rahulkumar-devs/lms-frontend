@@ -31,10 +31,10 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['User'],
+  tagTypes: ['User','Course'],
   
   endpoints: (builder) => ({
-    refreshToken: builder.query({
+    refreshToken: builder.query({ 
       query: () => ({
         url: "/refresh-token",
         method: "GET",
