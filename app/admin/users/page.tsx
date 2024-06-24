@@ -1,19 +1,46 @@
+"use client"
+
+import DashboardHeader from "@/components/admin/DashboardHeader";
+import { columns } from "@/components/admin/allUsers/Columns";
+import { DataTable } from "@/components/admin/allUsers/Data-table";
+import AdminSidebar from "@/components/admin/sidebar/AdminSidebar";
+import { useGetAllUsersQuery } from "@/redux/auth/userApi";
+import Heading from "@/utils/Heading";
 import React from "react";
 
 type Props = {};
 
 const Users = (props: Props) => {
+
+  const {data,isLoading} = useGetAllUsersQuery({});
+  console.log(data)
   return (
-    <div>
-      {" "}
-      y Usage Notes: Replace with the actual path to the profile picture. You
-      can customize the UserProfile component further as needed. Ensure the
-      components such as Users, Invoices, CreateCourse, etc., are correctly
-      imported and exist within your project. With this setup, you can display a
-      short profile in the sidebar, providing essential information such as
-      name, email, avatar, and role. The sidebar also allows toggling components
-      without page redirection.
-    </div>
+    <>
+      <div className="relative">
+        <Heading title="create-course min-h-screen" description="" keywords="" />
+        <div className="flex min-h-screen">
+          <div className="md:lg:w-[16%] md:w-1/5 w-full  top-0 left-0 fixed justify-between md:static flex items-center dark:bg-black ">
+            <AdminSidebar />
+            <div className="absolute top-0 right-0 md:hidden block">
+              <DashboardHeader />
+            </div>
+          </div>
+          <div className="md:w-[85%] w-full ">
+            <div className="container mx-auto py-10 mt-10">
+              {
+    
+              
+              isLoading ? <div>Loading...</div>: <DataTable columns={columns} data={data?.data} />
+              }
+            </div>
+
+            <div className="absolute top-0 right-0 md:block hidden p-5">
+              <DashboardHeader />
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
