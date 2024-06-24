@@ -11,6 +11,8 @@ type Props = {};
 
 const Page = (props: Props) => {
   return (
+     <>
+  
     <div className="relative">
       <Heading title="create-course " description="" keywords="" />
       <div className="flex min-h-[200vh]">
@@ -28,6 +30,8 @@ const Page = (props: Props) => {
         </div>
       </div>
     </div>
+   
+    </>
   );
 };
 
