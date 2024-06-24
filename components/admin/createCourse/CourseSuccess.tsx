@@ -8,6 +8,7 @@ type Props = {
 
 const CourseSuccess = ({ active, setActive }: Props) => {
   const prevButton = () => {
+    if(active <=0)return;
     setActive(active - 1);
   };
 
@@ -16,7 +17,7 @@ const CourseSuccess = ({ active, setActive }: Props) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-400 to-blue-500 text-white">
+    <div className="flex flex-col items-center justify-center  text-white ">
       <div className="bg-white text-black p-8 rounded-lg shadow-lg w-96">
         <h1 className="text-3xl font-bold text-center mb-6">Success!</h1>
         <p className="text-center mb-6">
