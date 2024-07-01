@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { ICourseData } from "./courseTypes";
 import { Button } from "@/components/ui/button";
-import { boolean } from "zod";
 
 type Props = {
   active: number;
@@ -12,6 +11,8 @@ type Props = {
   handleCourseCreate: any;
   isLoading: boolean;
   isSuccess: boolean;
+  setIsEditCourse: (isEditCourse: boolean) => void;
+  isEditCourse: boolean;
 };
 
 const CoursePreview = ({
@@ -21,10 +22,14 @@ const CoursePreview = ({
   handleCourseCreate,
   isLoading,
   isSuccess,
+  setIsEditCourse,
+  isEditCourse,
 }: Props) => {
   const prevButton = () => {
     setActive(active - 1);
   };
+
+  console.log("courseData", courseData);
 
   const handleOptions = () => {
     handleCourseCreate();
@@ -37,9 +42,12 @@ const CoursePreview = ({
   }, [isSuccess, setActive, active]);
 
   const [videoUrls, setVideoUrls] = useState({
-    videoThumbnail: "",
-    demoVideoUrl: "",
-    contentVideoUrls: [] as string[],
+    videoThumbnail: courseData?.thumbnail || "",
+    demoVideoUrl: courseData.demoVideo || "",
+    contentVideoUrls:
+      (courseData?.courseContent &&
+        courseData?.courseContent.map((item) => item.contentVideo)) ||
+      ([] as string[]),
   });
 
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -62,22 +70,29 @@ const CoursePreview = ({
   }, []);
 
   const getAllFilesData = useCallback(async () => {
-    if (courseData.thumbnail) {
-      const thumbnailUrl = await handleFiles(courseData.thumbnail);
-      setVideoUrls((prev) => ({ ...prev, videoThumbnail: thumbnailUrl }));
-    }
-    if (courseData.demoVideo) {
-      const demoVideoUrl = await handleFiles(courseData.demoVideo);
-      setVideoUrls((prev) => ({ ...prev, demoVideoUrl: demoVideoUrl }));
-    }
-    if (courseData.courseContent && courseData.courseContent.length > 0) {
-      const contentVideoUrls = await Promise.all(
-        courseData.courseContent.map((item) => handleFiles(item.contentVideo))
-      );
-      setVideoUrls((prev) => ({
-        ...prev,
-        contentVideoUrls: contentVideoUrls,
-      }));
+    try {
+      if (courseData.thumbnail) {
+        const thumbnailUrl = await handleFiles(courseData.thumbnail);
+        console.log("Thumbnail URL:", thumbnailUrl); // Debugging line
+        setVideoUrls((prev) => ({ ...prev, videoThumbnail: thumbnailUrl }));
+      }
+      if (courseData.demoVideo) {
+        const demoVideoUrl = await handleFiles(courseData.demoVideo);
+        console.log("Demo Video URL:", demoVideoUrl); // Debugging line
+        setVideoUrls((prev) => ({ ...prev, demoVideoUrl: demoVideoUrl }));
+      }
+      if (courseData.courseContent && courseData.courseContent.length > 0) {
+        const contentVideoUrls = await Promise.all(
+          courseData.courseContent.map((item) => handleFiles(item.contentVideo))
+        );
+        console.log("Content Video URLs:", contentVideoUrls); // Debugging line
+        setVideoUrls((prev) => ({
+          ...prev,
+          contentVideoUrls: contentVideoUrls,
+        }));
+      }
+    } catch (error) {
+      console.error("Error reading files:", error); // Debugging line
     }
   }, [courseData, handleFiles]);
 
@@ -99,7 +114,7 @@ const CoursePreview = ({
               className="w-full"
               poster={videoUrls.videoThumbnail || ""}
             >
-              <source src={videoUrls.demoVideoUrl} type="video/mp4" />
+              <source src={videoUrls.demoVideoUrl || ""} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           )}
@@ -197,9 +212,17 @@ const CoursePreview = ({
           <Button onClick={prevButton} disabled={isLoading}>
             Prev
           </Button>
-          <Button onClick={handleOptions} disabled={isLoading}>
-            {isLoading ? "Course is uploading ..." : "Upload"}
-          </Button>
+          {/* loading btn */}
+
+          {isEditCourse? (
+            <Button onClick={handleOptions} disabled={isLoading}>
+              {isLoading ? "Course is updating ..." : "Course Update"}
+            </Button>
+          ) : (
+            <Button onClick={handleOptions} disabled={isLoading}>
+              {isLoading ? "Course is uploading ..." : "Upload"}
+            </Button>
+          )}
         </div>
       </div>
     </div>

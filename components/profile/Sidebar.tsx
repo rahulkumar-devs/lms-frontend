@@ -16,6 +16,7 @@ const Sidebar = ({ setActiveTab, activeTab }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
+  console.log(user)
 
   return (
     <div className="relative">

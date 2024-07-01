@@ -2,20 +2,18 @@
 
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { IconType } from "react-icons/lib";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import DeleteCourse from "./DeleteCourse";
+// import DeleteCourse from "./DeleteCourse";
 import { ArrowUpDown } from "lucide-react";
 import { MdEdit } from "react-icons/md";
-import Link from "next/link";
 
 export interface ICourseColumn {
   _id: string;
   name: string;
-  ratings: number;
-  purchased: number;
-  createdAt: string;
+  email: string;
+  role: string;
+  courses: [];
 }
 
 export const columns: ColumnDef<ICourseColumn>[] = [
@@ -50,59 +48,65 @@ export const columns: ColumnDef<ICourseColumn>[] = [
 
   {
     accessorKey: "name",
-    header: "Course Name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("name")}</div>
-    ),
+    header: " Name",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
 
   {
-    accessorKey: "ratings",
-    header: "Rating",
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => (
+      <a href={`mailto:${row.original.email}`} className=" text-blue-900">
+        {row.original.email}
+      </a>
+    ),
   },
   {
-    accessorKey: "purchased",
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ row }) => <div className="">{row.getValue("role")}</div>,
+  },
+
+  {
+    accessorKey: "courses",
     header: ({ column }) => {
       return (
         <Button
           variant={"ghost"}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Purchased
+          purchased Courses
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div className=" flex items-center justify-center ">{row.getValue("purchased")}</div>,
+    cell: ({ row }) => (
+      <div className=" flex items-center justify-center ">
+        {row.original.courses.length}
+      </div>
+    ),
   },
 
-  {
-    accessorKey: "createdAt",
-    header: "Created At",
-    cell: ({ row }) => <div className="">{new Date(row.getValue("createdAt")).toLocaleString()}</div>,
-  },
   {
     accessorKey: "delete",
     enableHiding: true,
     cell: ({ row }) => (
       <>
-        <DeleteCourse
+        {/* <DeleteCourse
           courseId={row.original._id}
           courseTitle={row.original.name}
-        />
+        /> */}
       </>
     ),
   },
   {
-    accessorKey:"edit",
-    header:"Edit",
-    enableHiding:true,
-    cell:({row})=>(
+    accessorKey: "edit",
+    header: "Edit",
+    enableHiding: true,
+    cell: ({ row }) => (
       <>
-     <Link href={`/admin/edit-course/${row.original._id}`}>
-     <MdEdit/>
-     </Link>
+        <MdEdit />
       </>
-    )
-  }
+    ),
+  },
 ];

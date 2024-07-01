@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 
 import { MdDelete } from "react-icons/md";
+import { useDeleteCourseMutation } from "@/redux/course/courseApi";
+import toast from "react-hot-toast";
 
 type Props = {
   courseId: string;
@@ -18,6 +21,29 @@ type Props = {
 };
 
 const DeleteCourse = ({ courseId, courseTitle }: Props) => {
+  const [deleteCourse,{isLoading,error,isSuccess,data}]=useDeleteCourseMutation()
+
+  const handleDeleteCourse = async()=>{
+    deleteCourse({courseId:courseId})
+
+  }
+
+
+  useEffect(() => {
+    if (isSuccess) {
+      const message = data?.message || "Role changed successfully!";
+      toast.success(message);
+     
+    }
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData?.data.message);
+      }
+    }
+  }, [isSuccess, data, error]);
+
+
   return (
     <>
       <Dialog>
@@ -39,8 +65,10 @@ const DeleteCourse = ({ courseId, courseTitle }: Props) => {
           <p className=" text-sm">{courseTitle}</p>
 
           <DialogFooter>
-            <Button type="submit" variant={"destructive"}>
-              Delete course
+            <Button type="submit" variant={"destructive"} onClick={handleDeleteCourse} disabled={isLoading}>
+            {
+              isLoading ?"Deleting course...":"  Delete course"
+            }
             </Button>
           </DialogFooter>
         </DialogContent>

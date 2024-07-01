@@ -19,8 +19,8 @@ const courseApi = apiSlice.injectEndpoints({
 
     }),
     getAllCourses: builder.query({
-      query: () => ({
-        url: "/all-courses",
+      query: ({page,limit}) => ({
+        url: `/all-courses?page=${page}&limit=${limit}`,
         method: "GET",
         credentials: "include",
       }),
@@ -32,12 +32,32 @@ const courseApi = apiSlice.injectEndpoints({
           console.error("Fetch all courses error:", error);
         }
       },
-      providesTags:["Course"]
+      providesTags: ["Course"]
 
     }),
+
+    deleteCourse: builder.mutation({
+      query: ({ courseId }: { courseId: string }) => ({
+        url: `/delete-course/${courseId}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Course"]
+    }),
+
+    updateCourse:builder.mutation({
+      query: ({data,courseId}) => ({
+        url: `/update-course/${courseId}`,
+        method: "PUT",
+        credentials: "include",
+        body:data,
+        // headers: { 'Content-Type': 'multipart/form-data' }
+      }),
+      invalidatesTags: ["Course"]
+    })
   }),
 });
 
-export const { useUploadCourseMutation, useGetAllCoursesQuery } = courseApi;
+export const { useUploadCourseMutation, useGetAllCoursesQuery ,useDeleteCourseMutation,useUpdateCourseMutation} = courseApi;
 
 export default courseApi;

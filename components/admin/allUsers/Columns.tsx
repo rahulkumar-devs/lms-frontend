@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 // import DeleteCourse from "./DeleteCourse";
 import { ArrowUpDown } from "lucide-react";
 import { MdEdit } from "react-icons/md";
-import ChangeRole from "./ChangeRole";
+import ChangeRole from "../team/ChangeRole";
 
 export interface ICourseColumn {
   _id: string;
@@ -57,17 +57,14 @@ export const columns: ColumnDef<ICourseColumn>[] = [
   {
     accessorKey: "email",
     header: "Email",
+    cell:({row})=><a href={`mailto:${row.original.email}`} className=" text-blue-900">{row.original.email}</a>
   },
   {
-    accessorKey: "roles",
-    header: "Roles",
+    accessorKey: "role",
+    header: "Role",
     cell: ({ row }) => (
       <div className="">
-        <ChangeRole
-          userId={row.original._id}
-          userName={row.original.name}
-          userRole={row.original.role}
-        />
+       {row.getValue("role")}
       </div>
     ),
   },

@@ -1,9 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -39,11 +36,15 @@ const CourseContent = ({
     Array(courseContentData.length).fill(false)
   );
 
-  const [activeSection, setActiveSection] = useState(1);
+
+
   const [unableVideoSec, setUnableVideoSec] = useState(false);
   const [dragVideo, setDragVideo] = useState<boolean>(false);
   // Separate state for displayVideo
   const [displayVideos, setDisplayVideos] = useState<string[]>(Array(courseContentData.length).fill(""));
+  useEffect(() => {
+    setDisplayVideos(courseContentData.map((item) => item.contentVideo));
+  }, [courseContentData]); 
 
   const handleFileChange = (
     index: number,

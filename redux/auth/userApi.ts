@@ -21,7 +21,7 @@ const userApi = apiSlice.injectEndpoints({
                     console.error("Registration error:", error);
                 }
             },
-            invalidatesTags:["User"],
+            invalidatesTags: ["User"],
 
         }),
         verifyEmail: builder.mutation({
@@ -40,7 +40,7 @@ const userApi = apiSlice.injectEndpoints({
                     console.error("Registration error:", error);
                 }
             },
-            invalidatesTags:["User"],
+            invalidatesTags: ["User"],
 
         }),
 
@@ -48,27 +48,37 @@ const userApi = apiSlice.injectEndpoints({
             query: ({ oldPassword, newPassword }) => ({
                 url: "/update-password",
                 method: "PUT",
-                body: {oldPassword, newPassword  },
+                body: { oldPassword, newPassword },
                 credentials: "include" as const,
 
             }),
-            invalidatesTags:["User"],
+            invalidatesTags: ["User"],
 
         }),
         getAllUsers: builder.query({
-            query: ({}) => ({
+            query: ({ }) => ({
                 url: "/users",
                 method: "GET",
-              
+
                 credentials: "include" as const,
 
             }),
-            providesTags:["User"],
+            providesTags: ["User"],
 
+        }),
+
+        changeUserRole: builder.mutation({
+            query: ({role,email} ) => ({
+                url: "/role-permission",
+                method: "PUT",
+                body:{role,email},
+                credentials: "include" as const,
+            }),
+            invalidatesTags: ["User"],
         })
 
 
     })
 })
 
-export const { useChangeEmailMutation, useVerifyEmailMutation,useUpdatePasswordMutation,useGetAllUsersQuery } = userApi
+export const { useChangeEmailMutation, useVerifyEmailMutation, useUpdatePasswordMutation, useGetAllUsersQuery,useChangeUserRoleMutation } = userApi

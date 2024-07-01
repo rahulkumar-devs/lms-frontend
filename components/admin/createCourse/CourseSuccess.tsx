@@ -8,7 +8,7 @@ type Props = {
 
 const CourseSuccess = ({ active, setActive }: Props) => {
   const prevButton = () => {
-    if(active <=0)return;
+    // if(active <=0)return;
     setActive(active - 1);
   };
 

@@ -11,7 +11,11 @@ import {
     
   }
   
+
+
+
   export const AvatarUI:React.FC<props> = ({profilePic}) =>{
+    console.log(profilePic)
     return (
       <Avatar >
         <AvatarImage src={profilePic} alt="profile image" />

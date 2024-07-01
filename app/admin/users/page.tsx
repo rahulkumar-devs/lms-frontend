@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import DashboardHeader from "@/components/admin/DashboardHeader";
 import { columns } from "@/components/admin/allUsers/Columns";
@@ -11,13 +11,16 @@ import React from "react";
 type Props = {};
 
 const Users = (props: Props) => {
-
-  const {data,isLoading} = useGetAllUsersQuery({});
-  console.log(data)
+  const { data, isLoading, isSuccess } = useGetAllUsersQuery({});
+  // console.log(data)
   return (
     <>
       <div className="relative">
-        <Heading title="create-course min-h-screen" description="" keywords="" />
+        <Heading
+          title="Users"
+          description=""
+          keywords=""
+        />
         <div className="flex min-h-screen">
           <div className="md:lg:w-[16%] md:w-1/5 w-full  top-0 left-0 fixed justify-between md:static flex items-center dark:bg-black ">
             <AdminSidebar />
@@ -27,11 +30,11 @@ const Users = (props: Props) => {
           </div>
           <div className="md:w-[85%] w-full ">
             <div className="container mx-auto py-10 mt-10">
-              {
-    
-              
-              isLoading ? <div>Loading...</div>: <DataTable columns={columns} data={data?.data} />
-              }
+              {isLoading ? (
+                <div>Loading...</div>
+              ) : (
+                isSuccess ? <DataTable columns={columns} data={data?.data} />:"Failed to Fetch User Data"
+              )}
             </div>
 
             <div className="absolute top-0 right-0 md:block hidden p-5">

@@ -21,12 +21,17 @@ import { AvatarUI } from "@/components/Avatar";
 import DropdownMenu from "./DropdownMenu";
 import avatarLoader from "@/assets/loadAvatar.png";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 
 
 const AdminSidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const {user} = useSelector((state:RootState)=>state.auth);
+  console.log(user)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -98,7 +103,7 @@ const AdminSidebar = () => {
 
       <aside
         id="sidebar-multi-level-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
+        className={`fixed top-0 left-0 z-[999] w-64 h-screen transition-transform ${
           isSidebarOpen ? "" : "-translate-x-full sm:translate-x-0"
         }`}
       >
@@ -107,19 +112,21 @@ const AdminSidebar = () => {
             <div className="flex items-center flex-col p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
               <div className="w-16 h-16 relative">
                 <Image
-                  src={avatarLoader || ""}
+                  src={  user?.avatar || avatarLoader}
                   alt="Profile Picture"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-full"
+                  // layout="fill"
+                  // objectFit="cover"
+                  width={100}
+                  height={100}
+                  className="rounded-full object-cover"
                 />
               </div>
               <div className="ml-4">
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {"name"}
+                  {user.name ||"your name"}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-300">
-                  {"email"}
+                  {user?.email || "your@gmail"}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-300">
                   {"role"}

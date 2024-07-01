@@ -16,9 +16,9 @@ const RoleProtected: FC<ProtectedProps> = ({ allowedRoles, children, redirectPat
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
 
-  console.log(user)
+  // console.log(user)
   const isAllowed = user?.role.includes(allowedRoles);
-  console.log(isAllowed)
+  // console.log(isAllowed)
 
 
   useEffect(() => {

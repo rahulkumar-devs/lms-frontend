@@ -1,10 +1,8 @@
-"use client";
-
-import React, { FC, useState } from "react";
-import { courseInfoSchema, CourseInfoData } from "./courseDataSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import React, { FC, useState, useEffect } from "react";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
+// import {CourseInfoData} from "./courseTypes"
+import {courseInfoSchema,CourseInfoData} from "./courseDataSchema"
 
 type Props = {
   courseInfo: CourseInfoData;
@@ -32,27 +31,45 @@ const CourseInfo: FC<Props> = ({
   active,
   setActive,
 }) => {
+  const [displayThumbnail, setDisplayThumbnail] = useState<string | null>(
+    courseInfo.thumbnail || null
+  );
+  const [demoVideo, setDemoVideo] = useState<string | null>(
+    courseInfo.demoVideo || null
+  );
   const [draggingThumbnail, setDraggingThumbnail] = useState<boolean>(false);
-  const [displayThumbnail, setDisplayThumbnail] = useState<string | null>(null);
   const [draggingDemoVideo, setDraggingDemoVideo] = useState<boolean>(false);
-  const [demoVideo, setDemoVideo] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof courseInfoSchema>>({
     resolver: zodResolver(courseInfoSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      price: "",
-      estimatedPrice: "",
-      tags: "",
-      level: "",
-      demoVideo: null,
-      thumbnail: null,
+      name: courseInfo?.name || "",
+      description: courseInfo?.description || "",
+      price: courseInfo?.price || "",
+      estimatedPrice: courseInfo?.estimatedPrice || "",
+      tags: courseInfo?.tags || "",
+      level: courseInfo?.level || "",
+      demoVideo: courseInfo?.demoVideo || null,
+      thumbnail: courseInfo?.thumbnail || null,
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      name: courseInfo?.name || "",
+      description: courseInfo?.description || "",
+      price: courseInfo?.price || "",
+      estimatedPrice: courseInfo?.estimatedPrice || "",
+      tags: courseInfo?.tags || "",
+      level: courseInfo?.level || "",
+      demoVideo: courseInfo?.demoVideo || null,
+      thumbnail: courseInfo?.thumbnail || null,
+    });
+    setDisplayThumbnail(courseInfo.thumbnail || null);
+    setDemoVideo(courseInfo.demoVideo || null);
+  }, [courseInfo,form]);
+
   function onSubmit(values: z.infer<typeof courseInfoSchema>) {
-    console.log(values);
     setCourseInfo(values);
     setActive(active + 1);
   }
@@ -68,10 +85,11 @@ const CourseInfo: FC<Props> = ({
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (reader.readyState === 2) {
+          const result = reader.result as string;
           if (type === "thumbnail") {
-            setDisplayThumbnail(reader.result as string);
+            setDisplayThumbnail(result);
           } else {
-            setDemoVideo(reader.result as string);
+            setDemoVideo(result);
           }
         }
       };
@@ -113,8 +131,7 @@ const CourseInfo: FC<Props> = ({
     e.preventDefault();
     if (type === "thumbnail") {
       setDraggingThumbnail(false);
-    };
-     if(type === "demoVideo") {
+    } else {
       setDraggingDemoVideo(false);
     }
 
@@ -124,11 +141,11 @@ const CourseInfo: FC<Props> = ({
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (reader.readyState === 2) {
+          const result = reader.result as string;
           if (type === "thumbnail") {
-            setDisplayThumbnail(reader.result as string);
-          }
-          if(type === "demoVideo"){
-            setDemoVideo(reader.result as string);
+            setDisplayThumbnail(result);
+          } else {
+            setDemoVideo(result);
           }
         }
       };
@@ -137,6 +154,7 @@ const CourseInfo: FC<Props> = ({
 
     field.onChange(file);
   };
+
   return (
     <div className="w-[80%] m-auto mt-24">
       <Form {...form}>
@@ -149,8 +167,9 @@ const CourseInfo: FC<Props> = ({
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="mern lms platform with next 13..."
+                    placeholder="Enter name"
                     {...field}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -164,7 +183,11 @@ const CourseInfo: FC<Props> = ({
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Type your message here." {...field} />
+                  <Textarea
+                    placeholder="Enter description"
+                    {...field}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -178,7 +201,11 @@ const CourseInfo: FC<Props> = ({
                 <FormItem>
                   <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter the price" {...field} />
+                    <Input
+                      placeholder="Enter price"
+                      {...field}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -191,7 +218,11 @@ const CourseInfo: FC<Props> = ({
                 <FormItem>
                   <FormLabel>Estimated Price</FormLabel>
                   <FormControl>
-                    <Input placeholder=" &#x20b9; estimatedPrice" {...field} />
+                    <Input
+                      placeholder="Enter estimated price"
+                      {...field}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -205,64 +236,64 @@ const CourseInfo: FC<Props> = ({
               <FormItem>
                 <FormLabel>Tags</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Enter tags" {...field} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="flex  w-full  flex-col justify-between">
-            <FormField
-              control={form.control}
-              name="level"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Level</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Course level" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="demoVideo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    onDragOver={(e) => handleDragOver(e, "demoVideo")}
-                    onDragLeave={(e) => handleDragLeave(e, "demoVideo")}
-                    onDrop={(event) => handleDrop(event, field, "demoVideo")}
-                    className={`w-full min-h-[10vh] dark:border-white border-[#00000026] p-3 mt-3 border flex items-center justify-center ${
-                      draggingDemoVideo ? "bg-blue-500" : "bg-transparent"
-                    }`}
-                  >
-                    {demoVideo ? (
-                      <video controls className=" w-full">
-                        <source src={demoVideo} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    ) : (
-                      <span>
-                        Drag and drop your thumbnail here or click to browse
-                      </span>
-                    )}
-                  </FormLabel>
+          <FormField
+            control={form.control}
+            name="level"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Level</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter level" {...field} onChange={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="demoVideo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel
+                  onDragOver={(e) => handleDragOver(e, "demoVideo")}
+                  onDragLeave={(e) => handleDragLeave(e, "demoVideo")}
+                  onDrop={(event) => handleDrop(event, field, "demoVideo")}
+                  className={`w-full  dark:border-white border-[#00000026] p-3 mt-3 border flex items-center justify-center ${
+                    draggingDemoVideo ? "bg-blue-500" : "bg-transparent"
+                  }`}
+                >
+                  {demoVideo ? (
+                    <video controls className="w-full">
+                      <source src={demoVideo} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <span>
+                      Drag and drop your video here or click to browse
+                    </span>
+                  )}
+                </FormLabel>
 
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="video/*"
-                      onChange={(event) => handleFileChange(field, event, "demoVideo")}
-                      className="hidden"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="video/*"
+                    onChange={(event) =>
+                      handleFileChange(field, event, "demoVideo")
+                    }
+                    className="hidden"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="thumbnail"
@@ -297,7 +328,9 @@ const CourseInfo: FC<Props> = ({
                   <Input
                     type="file"
                     accept=".jpeg,.jpg,.png"
-                    onChange={(event) => handleFileChange(field, event,"thumbnail")}
+                    onChange={(event) =>
+                      handleFileChange(field, event, "thumbnail")
+                    }
                     className="hidden"
                   />
                 </FormControl>

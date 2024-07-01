@@ -135,7 +135,7 @@ const CreateCourse = (props: Props) => {
       formData.append("demoVideo", courseInfo.demoVideo);
     }
 
-    // 
+
 
     if(courseData.prerequisites&& courseData.prerequisites?.length >0){
       formData.append("prerequisites",JSON.stringify(courseData.prerequisites))
@@ -145,17 +145,21 @@ const CreateCourse = (props: Props) => {
       formData.append("benefits",JSON.stringify(courseData.benefits))
     }
 
-    if(courseData.courseContent && courseData.courseContent.length >0){
-      formData.append("courseContent",JSON.stringify(courseData.courseContent))
-    }
+
 
     // send all videos 
-    if(courseData.courseContent && courseData.courseContent.length >0){
-      courseData.courseContent.forEach((item,index)=>{
-        formData.append("courseVideo",item.contentVideo)
-      })
+   // Append course content data
+   if (courseData.courseContent) {
+    formData.append("courseContent", JSON.stringify(courseData.courseContent));
+    courseData.courseContent.forEach((content, index) => {
+      if (content.contentVideo) {
+        formData.append(`contentVideo_${index}`, content.contentVideo);
+      }
+    });
+  }
 
-    }
+ 
+
 
     await uploadCourse(formData);
     
@@ -166,18 +170,7 @@ const CreateCourse = (props: Props) => {
   
   
 
-  useEffect(() => {
-    if (isSuccess) {
-      const message = data?.message || "Registration successfully !";
-      toast.success(message);
-    }
-    if (error) {
-      if ("data" in error) {
-        const errorData = error as any;
-        toast.error(errorData?.data.message);
-      }
-    }
-  }, [isSuccess, data, error]);
+
 
 
 
