@@ -19,15 +19,15 @@ const courseApi = apiSlice.injectEndpoints({
 
     }),
     getAllCourses: builder.query({
-      query: ({page,limit}) => ({
+      query: ({ page, limit }) => ({
         url: `/all-courses?page=${page}&limit=${limit}`,
         method: "GET",
         credentials: "include",
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
-          const { data } = await queryFulfilled;
-          console.log(data);
+          await queryFulfilled;
+
         } catch (error) {
           console.error("Fetch all courses error:", error);
         }
@@ -45,19 +45,43 @@ const courseApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Course"]
     }),
 
-    updateCourse:builder.mutation({
-      query: ({data,courseId}) => ({
+    updateCourse: builder.mutation({
+      query: ({ data, courseId }) => ({
         url: `/update-course/${courseId}`,
         method: "PUT",
         credentials: "include",
-        body:data,
+        body: data,
         // headers: { 'Content-Type': 'multipart/form-data' }
       }),
       invalidatesTags: ["Course"]
-    })
+    }),
+    getAllProtectedCourses: builder.query({
+      query: ({ page, limit }) => ({
+        url: `/get-all-courses?page=${page}&limit=${limit}`,
+        method: "GET",
+        credentials: "include" as const
+      }),
+      providesTags: ["Course"]
+    }),
+    getCourseDetails: builder.query({
+      query: (id) => ({
+        url: `/get-course/${id}`,
+        method: "GET",
+        credentials: "include" as const
+      }),
+      providesTags: ["Course"]
+    }),
+
+
   }),
 });
 
-export const { useUploadCourseMutation, useGetAllCoursesQuery ,useDeleteCourseMutation,useUpdateCourseMutation} = courseApi;
+export const { useUploadCourseMutation,
+  useGetAllCoursesQuery,
+  useDeleteCourseMutation,
+   useUpdateCourseMutation,
+    useGetAllProtectedCoursesQuery,
+    useGetCourseDetailsQuery
+   } = courseApi;
 
 export default courseApi;

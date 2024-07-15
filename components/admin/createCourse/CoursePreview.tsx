@@ -11,8 +11,8 @@ type Props = {
   handleCourseCreate: any;
   isLoading: boolean;
   isSuccess: boolean;
-  setIsEditCourse: (isEditCourse: boolean) => void;
-  isEditCourse: boolean;
+  setIsEditCourse?: (isEditCourse: boolean) => void;
+  isEditCourse?: boolean;
 };
 
 const CoursePreview = ({

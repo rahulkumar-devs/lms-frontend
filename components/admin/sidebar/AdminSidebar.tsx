@@ -7,6 +7,7 @@ import {
   FaUsers,
   FaFileInvoice,
   FaQuestion,
+  FaJediOrder,
 } from "react-icons/fa";
 import { BsCameraVideoFill, BsFillBarChartLineFill } from "react-icons/bs";
 import {
@@ -23,15 +24,14 @@ import avatarLoader from "@/assets/loadAvatar.png";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-
-
+import Link from "next/link";
 
 const AdminSidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  const {user} = useSelector((state:RootState)=>state.auth);
-  console.log(user)
+  const { user } = useSelector((state: RootState) => state.auth);
+  // console.log(user)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -84,9 +84,19 @@ const AdminSidebar = () => {
 
   const AnalysisDropdown = [
     {
-      href: "admin/course-analysis",
+      href: "/admin/analytics/course-analysis",
       label: "Course Analysis",
       itemIcons: BsFillBarChartLineFill,
+    },
+    {
+      href: "/admin/analytics/user-analysis",
+      label: "User Analysis",
+      itemIcons: FaUsers,
+    },
+    {
+      href: "/admin/analytics/order-analysis",
+      label: "Order Analysis",
+      itemIcons: FaJediOrder,
     },
   ];
 
@@ -112,7 +122,7 @@ const AdminSidebar = () => {
             <div className="flex items-center flex-col p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
               <div className="w-16 h-16 relative">
                 <Image
-                  src={  user?.avatar || avatarLoader}
+                  src={user?.avatar || avatarLoader}
                   alt="Profile Picture"
                   // layout="fill"
                   // objectFit="cover"
@@ -123,13 +133,13 @@ const AdminSidebar = () => {
               </div>
               <div className="ml-4">
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {user.name ||"your name"}
+                  {user.name || "your name"}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-300">
                   {user?.email || "your@gmail"}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-300">
-                  {"role"}
+                  {user?.role || "Role"}
                 </p>
               </div>
             </div>
@@ -137,7 +147,9 @@ const AdminSidebar = () => {
             <li>
               <button className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <FaHome className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                <span className="ms-3">Dashboard</span>
+                <Link href="/admin" className="ms-3">
+                  Dashboard
+                </Link>
               </button>
             </li>
             <li>

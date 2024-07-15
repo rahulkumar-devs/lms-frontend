@@ -15,7 +15,7 @@ import { useSession } from "next-auth/react";
 
 export const navItemsData = [
   { name: "Home", path: "/" },
-  { name: "Course", path: "/course" },
+  { name: "Courses", path: "/courses" },
   { name: "About", path: "/about" },
   { name: "Policy", path: "/policy" },
   { name: "FAQ", path: "/faq" },
@@ -80,7 +80,7 @@ const Header: FC<Props> = () => {
   }, []);
 
   return (
-    <nav className="bg-white dark:bg-gray-900 sticky top-0 z-20 border-b border-gray-200 dark:border-gray-600">
+    <nav className="bg-white dark:bg-gray-900 sticky top-0 z-[99] border-b border-gray-200 dark:border-gray-600">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link href="/" className="flex items-center space-x-3">
           <span className="self-center text-xl md:text-2xl font-semibold whitespace-nowrap dark:text-white">

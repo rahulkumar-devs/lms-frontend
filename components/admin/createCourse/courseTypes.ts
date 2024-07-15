@@ -38,6 +38,7 @@ export interface ILink {
  export  interface ICourseData {
     name: string;
     description: string;
+    categories:string;
     price: string;
     estimatedPrice: string;
     tags: string;

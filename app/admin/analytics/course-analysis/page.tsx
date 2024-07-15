@@ -1,19 +1,16 @@
 "use client";
 
+import CourseAnalysis from "@/components/admin/analytics/CourseAnalysis";
 import DashboardHeader from "@/components/admin/DashboardHeader";
-import EditHero from "@/components/admin/editHero/EditHero";
+
 import AdminSidebar from "@/components/admin/sidebar/AdminSidebar";
 import Heading from "@/utils/Heading";
 import React, { useState } from "react";
 
 
-type Props = {
-    id:string
-};
 
-const Page = ({params}:any) => {
+const Page = () => {
   
-    const id = params?.id;
   return (
      <>
   
@@ -27,7 +24,7 @@ const Page = ({params}:any) => {
           </div>
         </div>
         <div className="md:w-[85%] w-full p-4 mt-10 md:px-5  md:mt-1">
-          <EditHero id={id}/>
+         <CourseAnalysis/>
           <div className="absolute top-0 right-0 md:block hidden p-5">
             <DashboardHeader />
           </div>

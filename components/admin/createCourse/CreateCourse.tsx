@@ -42,6 +42,7 @@ const CreateCourse = (props: Props) => {
   const [courseInfo, setCourseInfo] = useState<CourseInfoData>({
     name: "",
     description: "",
+    categories:"",
     price: "",
     estimatedPrice: "",
     tags: "",
@@ -100,6 +101,7 @@ const CreateCourse = (props: Props) => {
     const data: ICourseData = {
       name: courseInfo.name,
       description: courseInfo.description,
+      categories:courseInfo.categories,
       price: courseInfo.price,
       estimatedPrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
@@ -123,6 +125,7 @@ const CreateCourse = (props: Props) => {
     // Append text fields
     formData.append("name", courseData.name || "");
     formData.append("description", courseData.description || "");
+    formData.append("categories", courseData.categories || "");
     formData.append("price", courseData.price || "");
     formData.append("estimatedPrice", courseData.estimatedPrice || "");
     formData.append("tags", courseData.tags || "");

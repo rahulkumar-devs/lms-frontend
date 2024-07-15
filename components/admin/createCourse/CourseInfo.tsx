@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-// import {CourseInfoData} from "./courseTypes"
-import {courseInfoSchema,CourseInfoData} from "./courseDataSchema"
+import { courseInfoSchema, CourseInfoData } from "./courseDataSchema";
+import { useGetHomeLayoutQuery } from "@/redux/layout/layoutApi";
 
 type Props = {
   courseInfo: CourseInfoData;
@@ -39,12 +39,27 @@ const CourseInfo: FC<Props> = ({
   );
   const [draggingThumbnail, setDraggingThumbnail] = useState<boolean>(false);
   const [draggingDemoVideo, setDraggingDemoVideo] = useState<boolean>(false);
+  const [categoriesItem, setCategoriesItems] = useState([]);
+  const {
+    data: categoriesData,
+    isLoading: isFetching,
+    isSuccess: isFetched,
+  } = useGetHomeLayoutQuery("Categories");
+
+  useEffect(() => {
+    if (categoriesData?.data?.categories) {
+      setCategoriesItems(categoriesData?.data?.categories);
+    }
+  }, [categoriesData, setCategoriesItems]);
+  console.log(categoriesData);
+  console.log("courseInfo==>1234",courseInfo)
 
   const form = useForm<z.infer<typeof courseInfoSchema>>({
     resolver: zodResolver(courseInfoSchema),
     defaultValues: {
       name: courseInfo?.name || "",
       description: courseInfo?.description || "",
+  categories: courseInfo?.categories || "", 
       price: courseInfo?.price || "",
       estimatedPrice: courseInfo?.estimatedPrice || "",
       tags: courseInfo?.tags || "",
@@ -58,6 +73,7 @@ const CourseInfo: FC<Props> = ({
     form.reset({
       name: courseInfo?.name || "",
       description: courseInfo?.description || "",
+  categories: courseInfo?.categories || "", 
       price: courseInfo?.price || "",
       estimatedPrice: courseInfo?.estimatedPrice || "",
       tags: courseInfo?.tags || "",
@@ -67,7 +83,7 @@ const CourseInfo: FC<Props> = ({
     });
     setDisplayThumbnail(courseInfo.thumbnail || null);
     setDemoVideo(courseInfo.demoVideo || null);
-  }, [courseInfo,form]);
+  }, [courseInfo, form]);
 
   function onSubmit(values: z.infer<typeof courseInfoSchema>) {
     setCourseInfo(values);
@@ -236,25 +252,70 @@ const CourseInfo: FC<Props> = ({
               <FormItem>
                 <FormLabel>Tags</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter tags" {...field} onChange={field.onChange} />
+                  <Input
+                    placeholder="Enter tags"
+                    {...field}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="level"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Level</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter level" {...field} onChange={field.onChange} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex items-center justify-between">
+            <FormField
+              control={form.control}
+              name="level"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Level</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter level"
+                      {...field}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="categories"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Categories</FormLabel>
+                  <FormControl>
+                    <select
+                      {...field}
+                      value={field.value}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      className="flex items-center  px-3 py-2 text-base text-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                      <option value="" className="text-gray-500">
+                        Select Category
+                      </option>
+                      {categoriesItem &&
+                        categoriesItem.length > 0 &&
+                        categoriesItem.map((category: any, index: number) => {
+                          return (
+                            <option
+                              value={category.title}
+                              key={`categoriesItem-${index}`}
+                              className="text-gray-700"
+                            >
+                              {(category.title as string).toLocaleUpperCase()}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="demoVideo"

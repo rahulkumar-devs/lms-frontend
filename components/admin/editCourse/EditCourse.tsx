@@ -36,6 +36,7 @@ const EditCourse = ({ id }: Props) => {
   const [courseData, setCourseData] = useState<Partial<ICourseData>>({
     name: "",
     description: "",
+    categories:  "",
     price: "",
     estimatedPrice: "",
     tags: "",
@@ -46,6 +47,7 @@ const EditCourse = ({ id }: Props) => {
   const [courseInfo, setCourseInfo] = useState<CourseInfoData>({
     name: "",
     description: "",
+    categories:  "",
     price: "",
     estimatedPrice: "",
     tags: "",
@@ -85,6 +87,7 @@ const EditCourse = ({ id }: Props) => {
     setCourseInfo({
       name: foundCourse.name ?? "",
       description: foundCourse.description ?? "",
+      categories: foundCourse.categories ?? "",
       price: foundCourse.price ?? "",
       estimatedPrice: foundCourse.estimatedPrice ?? "",
       tags: foundCourse.tags ?? "",
@@ -107,6 +110,7 @@ const EditCourse = ({ id }: Props) => {
     setUpdateData(
       {name: foundCourse.name ?? "",
         description: foundCourse.description ?? "",
+      categories: foundCourse.categories ?? "",
         price: foundCourse.price ?? "",
         estimatedPrice: foundCourse.estimatedPrice ?? "",
         tags: foundCourse.tags ?? "",
@@ -121,6 +125,7 @@ const EditCourse = ({ id }: Props) => {
     setCourseData({
       name: foundCourse.name ?? "",
       description: foundCourse.description ?? "",
+      categories: foundCourse.categories ?? "",
       price: foundCourse.price ?? "",
       estimatedPrice: foundCourse.estimatedPrice ?? "",
       tags: foundCourse.tags ?? "",
@@ -158,6 +163,7 @@ const handleSubmit = () => {
   const data: ICourseData = {
     name: courseInfo.name,
     description: courseInfo.description,
+    categories: courseInfo.categories ?? "",
     price: courseInfo.price,
     estimatedPrice: courseInfo.estimatedPrice,
     tags: courseInfo.tags,
@@ -181,6 +187,8 @@ const handleCourseUpdate = async () => {
   // Append text fields
   formData.append("name", courseData.name || "");
   formData.append("description", courseData.description || "");
+  formData.append("categories", courseData.categories || "");
+
   formData.append("price", courseData.price || "");
   formData.append("estimatedPrice", courseData.estimatedPrice || "");
   formData.append("tags", courseData.tags || "");

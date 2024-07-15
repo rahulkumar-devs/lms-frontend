@@ -16,21 +16,19 @@ type Props = {
 const CoursePlayer = ({ videoUrl, title,thumbnail }: Props) => {
   return (
     <div>
-      <MediaPlayer
-        playsInline
-        load="visible"
-        posterLoad="visible"
-        title={"title"}
-        src={videoUrl}
-      >
-        <MediaProvider />
-        <DefaultVideoLayout
-          thumbnails={thumbnail}
-          icons={defaultLayoutIcons}
-        />
-      </MediaPlayer>
+      <MediaPlayer playsInline
+          title={title || ""}
+          src={videoUrl || ""}
+        >
+          <MediaProvider />
+          <DefaultVideoLayout
+            thumbnails={thumbnail || ""}
+            icons={defaultLayoutIcons}
+          />
+        </MediaPlayer>
     </div>
   );
 };
 
 export default CoursePlayer;
+ 

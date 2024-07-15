@@ -1,11 +1,11 @@
 "use client";
 
-import AdminHome from "@/components/admin/adminHome/AdminHome"
 import DashboardHeader from "@/components/admin/DashboardHeader";
 import AdminSidebar from "@/components/admin/sidebar/AdminSidebar";
 import Heading from "@/utils/Heading";
 import React, { useState } from "react";
 import Faqs from "@/components/admin/faqs/Faqs";
+import Categories from "@/components/admin/categories/Categories";
 
 type Props = {
   id: string;
@@ -24,7 +24,7 @@ const Page = () => {
             </div>
           </div>
           <div className="md:w-[85%] w-full p-4 mt-10 md:px-5  md:mt-1">
-            <AdminHome />
+            <Categories />
             <div className="absolute top-0 right-0 md:block hidden p-5">
               <DashboardHeader />
             </div>
